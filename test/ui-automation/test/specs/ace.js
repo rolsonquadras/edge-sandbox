@@ -25,6 +25,9 @@ describe("TrustBloc - Anonymous Comparator and Extractor (ACE)", () => {
 
         await browser.navigateTo(browser.config.ucisURL);
 
+        const source = await browser.getPageSource()
+        console.log("browser data = ", source)
+
         const showRegBtn = await $('#showRegister');
         await showRegBtn.waitForClickable();
         await showRegBtn.click();
