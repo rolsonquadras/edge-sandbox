@@ -171,6 +171,9 @@ automation-test-dev:
 
 .PHONY: automation-test
 automation-test:
+	curl --insecure -vvI https://wallet.local.trustbloc.dev/ 2>&1 | awk 'BEGIN { cert=0 } /^\* Server certificate:/ { cert=1 } /^\*/ { if (cert) print }'
+	curl -i -sk https://wallet.local.trustbloc.dev/
+	curl -i -sk https://ucis-rp.local.trustbloc.dev/
 	@cd ./test/ui-automation && npm run test && npm run report
 
 .PHONY: clean-build

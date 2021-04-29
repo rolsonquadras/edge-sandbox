@@ -27,6 +27,11 @@ deploy-all: deploy-core
 
 ci-deploy-all: ci-deploy-core
 	./scripts/deploy_all.sh
+	set -x;
+	stat /etc/ssl/certs/ca-certificates.crt;
+	sudo cp -r ~/.trustbloc-k8s/local/certs /usr/local/share/ca-certificates/;
+	sudo update-ca-certificates;
+	stat /etc/ssl/certs/ca-certificates.crt;
 
 deploy-components:
 	COMPONENTS="$(COMPONENTS)" ./scripts/deploy_all.sh

@@ -8,6 +8,7 @@ SPDX-License-Identifier: Apache-2.0
 
 const {chapi, wallet, issuer, verifier} = require('../helpers');
 const uuid = require('uuid-random');
+const axios = require('axios');
 
 describe("TrustBloc - Flight Boarding", () => {
     const ctx = {
@@ -27,13 +28,58 @@ describe("TrustBloc - Flight Boarding", () => {
         this.timeout(300000);
 
         // 1. Navigate to Wallet Website
+        await browser.navigateTo("https://wallet.devel.trustbloc.dev");
+
+        let title = await browser.getTitle()
+        let source = await browser.getPageSource()
+        console.log(title)
+        console.log(source)
+
+        title = await browser.getLogs("browser")
+        console.log(title)
+
+        await browser.navigateTo("https://wallet-support.local.trustbloc.dev/healthcheck");
+        const title1 = await browser.getTitle()
+        const source1 = await browser.getPageSource()
+        console.log(title1)
+        console.log(source1)
+
         await browser.navigateTo(browser.config.walletURL);
+        title = await browser.getTitle()
+        source = await browser.getPageSource()
+        console.log(title)
+        console.log(source)
+
+        title = await browser.getLogs("browser")
+        console.log(title)
 
         // 2. Initialize Wallet (register/sign-up/etc.)
-        await wallet.init(ctx);
+        // await wallet.init(ctx);
+
+        title = await browser.getLogs("browser")
+        console.log(title)
+
+        title = await browser.getLogs("driver")
+        console.log(title)
+
+        await axios.get('https://wallet-support.local.trustbloc.dev/healthcheck')
+            .then(function (response) {
+                // handle success
+                console.log("then")
+                console.log(response);
+            })
+            .catch(function (error) {
+                // handle error
+                console.log("error")
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+                console.log("done")
+            });
     });
 
-    it('Issue Vaccination Certificate', async function () {
+    it.skip('Issue Vaccination Certificate', async function () {
         // 1. Navigate to Issuer Website
         await browser.newWindow(browser.config.issuerURL);
 
@@ -64,7 +110,7 @@ describe("TrustBloc - Flight Boarding", () => {
         })
     })
 
-    it('Issue Permanent Residence Card', async function () {
+    it.skip('Issue Permanent Residence Card', async function () {
         // 1. Navigate to Issuer Website
         await browser.newWindow(browser.config.prcURL);
 
@@ -113,7 +159,7 @@ describe("TrustBloc - Flight Boarding", () => {
         })
     })
 
-    it('Issue Booking Reference', async function () {
+    it.skip('Issue Booking Reference', async function () {
         // 1. Navigate to Issuer Website
         await browser.newWindow(browser.config.flightBookingURL);
 
@@ -150,7 +196,7 @@ describe("TrustBloc - Flight Boarding", () => {
         })
     })
 
-    it('Flight Check-in with Permanent Residence Card, Booking Reference ' +
+    it.skip('Flight Check-in with Permanent Residence Card, Booking Reference ' +
         'and Selective discloure of Vaccination Certificate details', async function () {
         // 1. Navigate bank website
         await browser.newWindow(browser.config.flightBoardingURL);

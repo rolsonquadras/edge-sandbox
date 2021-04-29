@@ -32,9 +32,9 @@ exports.config = {
     // directory is where your package.json resides, so `wdio` will be called from there.
     //
     specs: [
-        // './test/specs/flight-boarding.js',
+        './test/specs/flight-boarding.js',
         // './test/specs/new-bank-account.js',
-        './test/specs/ace.js',
+        // './test/specs/ace.js',
         // './test/specs/vcs-flow.js'
     ],
     // Patterns to exclude.
@@ -87,6 +87,7 @@ exports.config = {
                 '--disable-dev-shm-usage',
                 '--window-size=1920,1080',
                 '--disable-web-security',
+                '--ignore-certificate-errors',
             ],
         }
     }],

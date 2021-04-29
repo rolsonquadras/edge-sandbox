@@ -14,7 +14,7 @@ set -e
 : ${DOMAIN:=trustbloc.dev}
 : ${DEPLOYMENT_ENV:=local}
 ## Should be deployed in the listed order
-: ${COMPONENTS=cms comparator login-consent issuer rp ace-rp}
+: ${COMPONENTS=}
 DEPLOY_LIST=( $COMPONENTS )
 
 ## Map: component --> healthcheck(s)
@@ -92,23 +92,33 @@ pushd ./.core/orb
 popd
 fi
 
-for component in ${DEPLOY_LIST[@]}; do
+deploy () {
+    component=$1
     echo "${AQUA} === component: $component ${NONE}"
     pushd $component
-        make SHELL=/bin/bash setup-no-certs
+        make setup-no-certs
         mkdir -p kustomize/$component/overlays/${DEPLOYMENT_ENV}/certs
         cp ~/.trustbloc-k8s/${DEPLOYMENT_ENV}/certs/* kustomize/$component/overlays/${DEPLOYMENT_ENV}/certs
-        make SHELL=/bin/bash deploy
+        make deploy
     popd
     ## run all health checks for a given component
     for url in ${HEALTCHECK_URL[$component]}; do
         healthCheck $component "$url" ${HEALTHCHECK_CODE["$url"]}
     done
-#    echo press ENTER to continue && read L
+}
+
+for component in ${DEPLOY_LIST[@]}; do
+    deploy $component  &
 done
 
+# for component in ${DEPLOY_LIST[@]}; do
+#     for url in ${HEALTCHECK_URL[$component]}; do
+#         healthCheck $component "$url" ${HEALTHCHECK_CODE["$url"]}
+#     done
+# done
+
 ## Late health checks
-component=LATE
-for url in ${HEALTCHECK_URL[$component]}; do
-    healthCheck $component "$url" ${HEALTHCHECK_CODE["$url"]}
-done
+# component=LATE
+# for url in ${HEALTCHECK_URL[$component]}; do
+#     healthCheck $component "$url" ${HEALTHCHECK_CODE["$url"]}
+# done
